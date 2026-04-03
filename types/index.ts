@@ -2,8 +2,9 @@ export interface Question {
   id: string;
   text: string;
   order: number;
-  reversed: boolean; // 逆転スコア
-  radarItem: string; // 関連レーダー項目ID
+  reversed: boolean;  // 逆転スコア
+  weight: number;     // 重み: 1=低 / 2=中 / 3=高
+  radarItem: string;  // 関連レーダー項目ID
 }
 
 export interface RadarItem {
@@ -40,14 +41,14 @@ export const SCORE_LABELS: Record<number, string> = {
 };
 
 export const DEFAULT_QUESTIONS: Question[] = [
-  { id: 'q1', text: '最近1週間、布団に入ってから眠りにつくまでの時間はどうでしたか？', order: 1, reversed: false, radarItem: 'r1' },
-  { id: 'q2', text: '眠りの深さはいかがでしたか？', order: 2, reversed: false, radarItem: 'r2' },
-  { id: 'q3', text: '夜中に目が覚めることはありましたか？（頻繁に覚めた＝不満）', order: 3, reversed: true, radarItem: 'r3' },
-  { id: 'q4', text: '睡眠時間は十分でしたか？', order: 4, reversed: false, radarItem: 'r4' },
-  { id: 'q5', text: '朝の目覚めはいかがでしたか？', order: 5, reversed: false, radarItem: 'r5' },
-  { id: 'q6', text: '日中の眠気や集中力への影響はありましたか？（影響が大きい＝不満）', order: 6, reversed: true, radarItem: 'r6' },
-  { id: 'q7', text: '全体的な睡眠の質に満足していますか？', order: 7, reversed: false, radarItem: 'r1' },
-  { id: 'q8', text: 'ストレスや悩みが睡眠に影響していると感じますか？（影響大＝不満）', order: 8, reversed: true, radarItem: 'r2' },
+  { id: 'q1', text: '最近1週間、布団に入ってから眠りにつくまでの時間はどうでしたか？', order: 1, reversed: false, weight: 3, radarItem: 'r1' },
+  { id: 'q2', text: '眠りの深さはいかがでしたか？', order: 2, reversed: false, weight: 3, radarItem: 'r2' },
+  { id: 'q3', text: '夜中に目が覚めることはありましたか？（頻繁に覚めた＝不満）', order: 3, reversed: true, weight: 3, radarItem: 'r3' },
+  { id: 'q4', text: '睡眠時間は十分でしたか？', order: 4, reversed: false, weight: 3, radarItem: 'r4' },
+  { id: 'q5', text: '朝の目覚めはいかがでしたか？', order: 5, reversed: false, weight: 3, radarItem: 'r5' },
+  { id: 'q6', text: '日中の眠気や集中力への影響はありましたか？（影響が大きい＝不満）', order: 6, reversed: true, weight: 3, radarItem: 'r6' },
+  { id: 'q7', text: '全体的な睡眠の質に満足していますか？', order: 7, reversed: false, weight: 2, radarItem: 'r1' },
+  { id: 'q8', text: 'ストレスや悩みが睡眠に影響していると感じますか？（影響大＝不満）', order: 8, reversed: true, weight: 2, radarItem: 'r2' },
 ];
 
 export const DEFAULT_RADAR_ITEMS: RadarItem[] = [

@@ -1,7 +1,7 @@
 import { Question, RadarItem, RadarScore } from '@/types';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
-const GEMINI_MODEL = 'gemini-1.5-flash';
+const GEMINI_MODEL = 'gemini-2.0-flash';
 
 interface GeminiCandidate {
   content: { parts: { text: string }[] };
@@ -38,8 +38,12 @@ export async function analyzeWithGemini(
       const scoreLabel = score
         ? `${score}（${['', '大変不満', '不満', 'どちらともいえない', '満足', '大変満足'][score]}）`
         : '未回答';
-      const note = q.reversed ? '※逆転スコア（高スコアほど悪い状態）' : '';
-      return `Q[${q.id}]: ${q.text} → ${scoreLabel} ${note}`;
+      const weightLabel = ['', '低', '中', '高'][q.weight ?? 2];
+      const notes = [
+        q.reversed ? '逆転スコア（高スコアほど悪い状態）' : '',
+        `重み:${weightLabel}`,
+      ].filter(Boolean).join(' / ');
+      return `Q[${q.id}]: ${q.text} → ${scoreLabel}（${notes}）`;
     })
     .join('\n');
 
@@ -48,7 +52,8 @@ export async function analyzeWithGemini(
     .sort((a, b) => a.order - b.order)
     .map((ri) => {
       const relatedQs = questions.filter((q) => q.radarItem === ri.id);
-      return `・${ri.name}（${ri.description}）: 関連設問 = ${relatedQs.map((q) => q.id).join(', ') || 'なし'}`;
+      const qDetail = relatedQs.map((q) => `${q.id}(重み:${ ['', '低', '中', '高'][q.weight ?? 2]}${q.reversed ? ',逆転' : ''})`).join(', ');
+      return `・${ri.name}（${ri.description}）: 関連設問 = ${qDetail || 'なし'}`;
     })
     .join('\n');
 

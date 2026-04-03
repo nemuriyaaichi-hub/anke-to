@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getQuestions, getRadarItems, saveResponse } from '@/lib/sheets';
+import { getQuestions, getRadarItems, saveResponse, initSheets } from '@/lib/sheets';
 import { analyzeWithGemini } from '@/lib/gemini';
 import { RadarScore, SurveyResponse } from '@/types';
 
@@ -20,7 +20,13 @@ export async function POST(req: NextRequest) {
   const response: SurveyResponse = { sessionId, timestamp, answers };
   const radarScore: RadarScore = { sessionId, timestamp, scores };
 
-  await saveResponse(response, radarScore);
+  // シート初期化 → 保存（失敗しても結果は返す）
+  try {
+    await initSheets();
+    await saveResponse(response, radarScore);
+  } catch (e) {
+    console.warn('Sheets save skipped:', e);
+  }
 
   return NextResponse.json({ scores, radarItems });
 }

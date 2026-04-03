@@ -102,15 +102,28 @@ export default function QuestionsClient() {
               placeholder="設問テキストを入力"
             />
 
-            <label className="flex items-center gap-2 text-sm text-slate-400 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={q.reversed}
-                onChange={(e) => updateQuestion(q.id, 'reversed', e.target.checked)}
-                className="rounded"
-              />
-              逆転スコア（高スコア＝悪い状態）
-            </label>
+            <button
+              type="button"
+              onClick={() => updateQuestion(q.id, 'reversed', !q.reversed)}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all"
+              style={{
+                background: q.reversed ? '#450a0a' : '#0a0f1e',
+                border: `1px solid ${q.reversed ? '#ef4444' : '#1e293b'}`,
+              }}
+            >
+              <span className="text-sm" style={{ color: q.reversed ? '#fca5a5' : '#64748b' }}>
+                逆転スコア（高スコア＝悪い状態）
+              </span>
+              <span
+                className="text-xs font-bold px-2 py-0.5 rounded"
+                style={{
+                  background: q.reversed ? '#ef4444' : '#1e293b',
+                  color: q.reversed ? '#fff' : '#475569',
+                }}
+              >
+                {q.reversed ? 'ON' : 'OFF'}
+              </span>
+            </button>
           </div>
         ))}
       </div>

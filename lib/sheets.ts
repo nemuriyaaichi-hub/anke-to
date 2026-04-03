@@ -26,7 +26,7 @@ export async function getQuestions(): Promise<Question[]> {
     const sheets = getSheetsClient();
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'questions!A2:E',
+      range: 'questions!A2:F',
     });
     const rows = res.data.values;
     if (!rows || rows.length === 0) return DEFAULT_QUESTIONS;
@@ -36,6 +36,7 @@ export async function getQuestions(): Promise<Question[]> {
       reversed: r[2] === 'TRUE',
       radarItem: r[3] || '',
       order: parseInt(r[4] || '0'),
+      weight: parseInt(r[5] || '2'),
     }));
   } catch {
     return DEFAULT_QUESTIONS;
@@ -44,7 +45,7 @@ export async function getQuestions(): Promise<Question[]> {
 
 export async function saveQuestions(questions: Question[]): Promise<void> {
   const sheets = getSheetsClient();
-  const values = questions.map((q) => [q.id, q.text, q.reversed ? 'TRUE' : 'FALSE', q.radarItem, q.order]);
+  const values = questions.map((q) => [q.id, q.text, q.reversed ? 'TRUE' : 'FALSE', q.radarItem, q.order, q.weight ?? 2]);
   await sheets.spreadsheets.values.update({
     spreadsheetId: SPREADSHEET_ID,
     range: 'questions!A2',
@@ -54,7 +55,7 @@ export async function saveQuestions(questions: Question[]): Promise<void> {
   // Clear extra rows
   await sheets.spreadsheets.values.clear({
     spreadsheetId: SPREADSHEET_ID,
-    range: `questions!A${values.length + 2}:E1000`,
+    range: `questions!A${values.length + 2}:F1000`,
   });
 }
 
@@ -182,7 +183,7 @@ export async function initSheets(): Promise<void> {
     const questions = DEFAULT_QUESTIONS;
     const radarItems = DEFAULT_RADAR_ITEMS;
     const updates = [
-      { range: 'questions!A1:E1', values: [['id', 'text', 'reversed', 'radarItem', 'order']] },
+      { range: 'questions!A1:F1', values: [['id', 'text', 'reversed', 'radarItem', 'order', 'weight']] },
       { range: 'radar_items!A1:D1', values: [['id', 'name', 'description', 'order']] },
       { range: 'responses!A1', values: [['sessionId', 'timestamp', ...questions.map((q) => q.text)]] },
       { range: 'radar_scores!A1', values: [['sessionId', 'timestamp', ...radarItems.map((r) => r.name)]] },
