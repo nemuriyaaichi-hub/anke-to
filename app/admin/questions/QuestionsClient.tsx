@@ -102,20 +102,26 @@ export default function QuestionsClient() {
               placeholder="設問テキストを入力"
             />
 
+            {/* 逆転スコア */}
             <button
               type="button"
               onClick={() => updateQuestion(q.id, 'reversed', !q.reversed)}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all mb-2"
               style={{
                 background: q.reversed ? '#450a0a' : '#0a0f1e',
                 border: `1px solid ${q.reversed ? '#ef4444' : '#1e293b'}`,
               }}
             >
-              <span className="text-sm" style={{ color: q.reversed ? '#fca5a5' : '#64748b' }}>
-                逆転スコア（高スコア＝悪い状態）
-              </span>
+              <div>
+                <span className="text-sm block" style={{ color: q.reversed ? '#fca5a5' : '#64748b' }}>
+                  逆転スコア
+                </span>
+                <span className="text-xs" style={{ color: q.reversed ? '#fca5a5' : '#475569' }}>
+                  {q.reversed ? '高スコア＝悪い状態（例：中途覚醒・日中の眠気）' : '高スコア＝良い状態（通常）'}
+                </span>
+              </div>
               <span
-                className="text-xs font-bold px-2 py-0.5 rounded"
+                className="text-xs font-bold px-2 py-0.5 rounded ml-3 shrink-0"
                 style={{
                   background: q.reversed ? '#ef4444' : '#1e293b',
                   color: q.reversed ? '#fff' : '#475569',
@@ -124,6 +130,27 @@ export default function QuestionsClient() {
                 {q.reversed ? 'ON' : 'OFF'}
               </span>
             </button>
+
+            {/* 重み */}
+            <div className="flex items-center gap-2 px-1">
+              <span className="text-xs text-slate-500 shrink-0">重み（寄与度）:</span>
+              <div className="flex gap-1 flex-1">
+                {([1, 2, 3] as const).map((w) => (
+                  <button
+                    key={w}
+                    type="button"
+                    onClick={() => updateQuestion(q.id, 'weight', w)}
+                    className="flex-1 py-1.5 rounded text-xs font-bold transition-all"
+                    style={{
+                      background: (q.weight ?? 2) === w ? 'var(--accent)' : '#1e293b',
+                      color: (q.weight ?? 2) === w ? '#fff' : '#475569',
+                    }}
+                  >
+                    {w === 1 ? '低' : w === 2 ? '中' : '高'}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         ))}
       </div>

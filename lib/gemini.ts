@@ -110,11 +110,16 @@ function computeLocalScores(
       scores[ri.id] = 3.0;
       continue;
     }
-    const vals = relatedQs.map((q) => {
+    let totalWeight = 0;
+    let weightedSum = 0;
+    for (const q of relatedQs) {
+      const w = q.weight ?? 2;
       const raw = answers[q.id] ?? 3;
-      return q.reversed ? 6 - raw : raw;
-    });
-    scores[ri.id] = Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10;
+      const val = q.reversed ? 6 - raw : raw;
+      weightedSum += val * w;
+      totalWeight += w;
+    }
+    scores[ri.id] = Math.round((weightedSum / totalWeight) * 10) / 10;
   }
   return scores;
 }

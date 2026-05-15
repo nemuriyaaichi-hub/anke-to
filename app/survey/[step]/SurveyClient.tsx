@@ -83,14 +83,18 @@ export default function SurveyClient({ step }: SurveyClientProps) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ sessionId, answers: newAnswers }),
         });
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data?.error || `HTTP ${res.status}`);
+        }
         sessionStorage.setItem('survey_result', JSON.stringify(data));
         sessionStorage.removeItem('survey_answers');
         sessionStorage.removeItem('survey_session');
         router.push('/result');
-      } catch {
+      } catch (e) {
         setSubmitting(false);
-        alert('送信エラーが発生しました。もう一度お試しください。');
+        const msg = e instanceof Error ? e.message : '不明なエラー';
+        alert(`送信エラー: ${msg}`);
       }
     }
   }, [currentQuestion, answers, step, total, sessionId, router, submitting]);
