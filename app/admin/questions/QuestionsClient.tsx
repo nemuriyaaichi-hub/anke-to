@@ -29,6 +29,7 @@ export default function QuestionsClient() {
       order: questions.length + 1,
       reversed: false,
       radarItem: '',
+      weight: 2,
     };
     setQuestions([...questions, newQ]);
   }
